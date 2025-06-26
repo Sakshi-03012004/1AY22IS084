@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-container {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Authentication System</h1>
+    
+    <!-- Registration Form -->
+    <div class="form-container">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="registerEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="registerName" required>
+            </div>
+            <div class="form-group">
+                <label>Mobile No:</label>
+                <input type="tel" id="registerMobile" required>
+            </div>
+            <div class="form-group">
+                <label>Github Username:</label>
+                <input type="text" id="registerGithub" required>
+            </div>
+            <div class="form-group">
+                <label>Roll No:</label>
+                <input type="text" id="registerRollNo" required>
+            </div>
+            <div class="form-group">
+                <label>Access Code:</label>
+                <input type="text" id="registerAccessCode" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <div id="registerResponse" class="response"></div>
+    </div>
+
+    <!-- Authentication Form -->
+    <div class="form-container">
+        <h2>Authenticate</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="authEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="authName" required>
+            </div>
+            <div class="form-group">
+                <label>Roll No:</label>
+                <input type="text" id="authRollNo" required>
+            </div>
+            <div class="form-group">
+                <label>Access Code:</label>
+                <input type="text" id="authAccessCode" required>
+            </div>
+            <div class="form-group">
+                <label>Client ID:</label>
+                <input type="text" id="authClientID" required>
+            </div>
+            <div class="form-group">
+                <label>Client Secret:</label>
+                <input type="password" id="authClientSecret" required>
+            </div>
+            <button type="submit">Authenticate</button>
+        </form>
+        <div id="authResponse" class="response"></div>
+    </div>
+
+    <script>
+        // Registration form submission handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                email: document.getElementById('registerEmail').value,
+                name: document.getElementById('registerName').value,
+                mobileNo: document.getElementById('registerMobile').value,
+                githubUsername: document.getElementById('registerGithub').value,
+                rollNo: document.getElementById('registerRollNo').value,
+                accessCode: document.getElementById('registerAccessCode').value
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                const responseDiv = document.getElementById('registerResponse');
+                responseDiv.className = response.ok ? 'response success' : 'response error';
+                responseDiv.textContent = response.ok ? 'Registration successful!' : data.message;
+            } catch (error) {
+                const responseDiv = document.getElementById('registerResponse');
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Authentication form submission handler
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                email: document.getElementById('authEmail').value,
+                name: document.getElementById('authName').value,
+                rollNo: document.getElementById('authRollNo').value,
+                accessCode: document.getElementById('authAccessCode').value,
+                clientID: document.getElementById('authClientID').value,
+                clientSecret: document.getElementById('authClientSecret').value
+            };
+
+            try {
+                const response = await fetch('/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                const responseDiv = document.getElementById('authResponse');
+                responseDiv.className = response.ok ? 'response success' : 'response error';
+                responseDiv.textContent = response.ok ? 'Authentication successful!' : data.message;
+            } catch (error) {
+                const responseDiv = document.getElementById('authResponse');
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
